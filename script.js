@@ -4,12 +4,21 @@ const main = document.getElementById('main');
 const form = document.getElementById('form');
 const search = document.getElementById('search');
 
-async function getUser(user){
-    const resp = await fetch(APIURL + user);
+async function getUser(username){
+    const resp = await fetch(APIURL + username);
     const respData = await resp.json();
     console.log(respData);
     //Create a user card using the API data
     createUserCard(respData);
+
+    getRepos(username);
+}
+
+async function getRepos(username){
+    const resp = await fetch(APIURL + username + "/repos");
+    const respData = await resp.json();
+
+    addReposToCard(respData);
 }
 
 function createUserCard(user){
@@ -23,15 +32,32 @@ function createUserCard(user){
                 <h2>${user.name}</h2>
                 <p class="user-bio">${user.bio}</p>
                 <ul class="info">
-                    <li>${user.followers}</li>
-                    <li>${user.following}</li>
-                    <li>${user.public_repos}</li>
+                    <li>${user.followers}<strong>Followers</strong>&nbsp;&nbsp;</li>
+                    <li>${user.following}<strong>Following</strong>&nbsp;&nbsp;</li>
+                    <li>${user.public_repos}<strong>Public Repositories</strong></li>
                 </ul>
+
+                <div id="repos"></div>          
             </div>
         </div>
     `;
     
     main.innerHTML = cardHTML;
+}
+
+function addReposToCard(repos){
+    const reposEl = document.getElementById("repos");
+
+    repos.sort((a,b) => b.stargazers_count - a.stargazers_count).forEach((repo) => {
+        const repoEl = document.createElement("a");
+        repoEl.classList.add("repo")
+
+        repoEl.href = repo.html_url;
+        repoEl.target = "_blank";
+        repoEl.innerText = repo.name;
+
+        reposEl.appendChild(repoEl);
+    });
 }
 
 form.addEventListener("submit", (e) => {

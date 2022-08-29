@@ -31,6 +31,7 @@ input {
 
 input::placeholder {
     color: #bbb;
+    font-size: 15px;
 }
 
 input:focus {
@@ -78,7 +79,7 @@ input:focus {
 }
 
 .user-info ul li strong {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-left: 0.5rem;
 }
 
